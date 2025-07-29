@@ -1,0 +1,87 @@
+body {
+  font-family: Arial, sans-serif;
+  background-color: #fff5fa;
+  margin: 0;
+  padding: 0;
+}
+
+.container {
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 20px;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+h1 {
+  color: #d81b60;
+  text-align: center;
+  margin-top: 0;
+}
+
+h2 {
+  color: #ad1457;
+  text-align: center;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+th {
+  background-color: #f8bbd0;
+  color: #880e4f;
+}
+
+tr:nth-child(even) {
+  background-color: #fce4ec;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f2f2f2;
+}
+
+.task-item:last-child {
+  border-bottom: none;
+}
+
+.task-item input[type='checkbox'] {
+  margin-right: 12px;
+  transform: scale(1.3);
+  accent-color: #d81b60;
+}
+
+.task-item label {
+  flex-grow: 1;
+}
+
+.points {
+  color: #ba68c8;
+  font-weight: bold;
+  margin-left: 5px;
+}
+
+.footer {
+  margin-top: 30px;
+  text-align: center;
+  color: #6d6d6d;
+  font-style: italic;
+}
