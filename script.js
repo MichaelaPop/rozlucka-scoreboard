@@ -17,8 +17,7 @@ const tasks = [
 const players = ['Tínka','Míša','Mája','Masha','Žaneta','Sussi','Tereza'];
 
 // Calculate maximum points based on tasks list
-totalPoints = tasks.reduce((sum, t) => sum + t.points, 0);
-const maxPoints = totalPoints;
+const maxPoints = tasks.reduce((sum, t) => sum + t.points, 0);
 
 // Retrieve leaderboard data sorted descending
 function getLeaderboardData() {
