@@ -5,18 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Míša - Rozlučka</title>
   <link rel="stylesheet" href="styles.css">
-  <script defer src="script.js"></script>
 </head>
 <body>
   <div class="container">
     <h1>Míša</h1>
-    <h2>Body: <span id="score">0</span></h2>
-    <ul id="task-list"></ul>
-    <p class="footer">Hezky se bav a pořádně to rozjeď!</p>
+    <p><strong>Body:</strong> <span id="score">0</span></p>
+    <ul id="tasks"></ul>
+    <div id="score-info"></div>
+    <div class="progress-container">
+      <div class="progress-bar" id="progress-bar"></div>
+    </div>
+    <div id="motivace" class="motivace-text"></div>
   </div>
+  <footer>Hezky se bav a pořádně to rozjeď!</footer>
+  <script src="script.js"></script>
   <script>
     const playerName = "Míša";
-    document.addEventListener('DOMContentLoaded', function() {
+    document.addEventListener("DOMContentLoaded", () => {
       initPage(playerName);
     });
   </script>

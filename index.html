@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Leaderboard</title>
+  <title>Leaderboard - Rozlučka</title>
   <link rel="stylesheet" href="styles.css">
-  <script defer src="script.js"></script>
 </head>
 <body>
   <div class="container">
-    <h1>Leaderboard</h1>
-    <table id="leaderboard-table">
+    <h1>Průběžné pořadí</h1>
+    <table>
       <thead>
         <tr>
           <th>Jméno</th>
@@ -21,10 +20,11 @@
       </tbody>
     </table>
   </div>
+  <footer>Hezky se bav a pořádně to rozjeď!</footer>
+  <script src="script.js"></script>
   <script>
-    const playerNames = ["Tínka","Míša","Mája","Masha","Žaneta","Sussi","Tereza"];
-    document.addEventListener('DOMContentLoaded', function() {
-      initLeaderboard(playerNames);
+    document.addEventListener("DOMContentLoaded", () => {
+      initLeaderboard();
     });
   </script>
 </body>
