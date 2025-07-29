@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Leaderboard</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="script.js"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Leaderboard</h1>
+    <table id="leaderboard-table">
+      <thead>
+        <tr>
+          <th>Jméno</th>
+          <th>Body</th>
+        </tr>
+      </thead>
+      <tbody>
+      </tbody>
+    </table>
+  </div>
+  <script>
+    const playerNames = ["Tínka","Míša","Mája","Masha","Žaneta","Sussi","Tereza"];
+    document.addEventListener('DOMContentLoaded', function() {
+      initLeaderboard(playerNames);
+    });
+  </script>
+</body>
+</html>
