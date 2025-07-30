@@ -1,8 +1,10 @@
+// Upravený seznam úkolů.  Opravili jsme formulace prvního a čtvrtého úkolu
+// tak, aby odpovídaly požadovaným tvarům, a přidali jsme dva nové úkoly.
 const tasks = [
-  { description: "Společně vymyslete jméno pro vašeho típka.", points: 5 },
+  { description: "Společně vymysleme jméno pro vašeho týpka.", points: 5 },
   { description: "Udělejme společnou fotku \"Před\".", points: 5 },
   { description: "Vyfoť se s nevěstou v originální póze.", points: 10 },
-  { description: "Udělej si crazy fotku s našim típkem.", points: 15 },
+  { description: "Udělej si crazy fotku s naším týpkem.", points: 15 },
   { description: "Vyfoť tajně nejulítlejší outfit večera.", points: 20 },
   { description: "Vyfoť tajně někoho, kdo vypadá jako známá osobnost.", points: 20 },
   { description: "Udělej si selfie s naprostým cizincem.", points: 30 },
@@ -10,7 +12,10 @@ const tasks = [
   { description: "Vyfoť tajně holku, která má na sobě víc růžové než ty.", points: 15 },
   { description: "Zachyť nejvíc znechucený výraz večera.", points: 20 },
   { description: "Vyfoť náhodnou věc, která připomíná penis.", points: 25 },
-  { description: "Udělejme společnou fotku \"PO\" (před odchodem první z nás).", points: 10 }
+  { description: "Udělejme společnou fotku \"PO\" (před odchodem první z nás).", points: 10 },
+  // Nové úkoly
+  { description: "Udělejme fotku se šesti Tomy a nevěstou.", points: 10 },
+  { description: "Udělej bláznivou selfie s co největším počtem Tomů.", points: 15 }
 ];
 
 // List of players for leaderboard and ranking
@@ -86,6 +91,8 @@ function updateExtraUI(playerName) {
   const motivaceEl = document.getElementById('motivace');
   if (motivaceEl) {
     let message = "";
+    // Motivace se mění podle aktuálního skóre. Přidali jsme stupeň nad 170 bodů,
+    // aby titul ultrapařmenka odpovídal novému maximálnímu počtu bodů.
     if (currentScore === 0) {
       message = "Holka, začni! Tohle není kavárna.";
     } else if (currentScore <= 30) {
@@ -94,8 +101,10 @@ function updateExtraUI(playerName) {
       message = "Rozjíždíš to! Jsi na dobré cestě ke slávě!";
     } else if (currentScore <= 120) {
       message = "Už jsi legenda večera… skoro!";
-    } else {
+    } else if (currentScore <= 170) {
       message = "🔥 Královno chaosu! Ostatní nestíhají!";
+    } else {
+      message = "🔥🔥🔥Získáváš titul korunovaná ultrapařmenka!🔥🔥🔥";
     }
     motivaceEl.textContent = message;
   }
