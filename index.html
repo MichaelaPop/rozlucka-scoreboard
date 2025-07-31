@@ -4,7 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leaderboard - Rozlučka</title>
+  <!-- Existing stylesheet (colors, layout, etc.) -->
   <link rel="stylesheet" href="styles.css">
+  <!-- Additional styles for avatars on the leaderboard -->
+  <style>
+    /* Small avatars for the leaderboard table */
+    .avatar-small {
+      /* Larger size so the image stands out when stacked above the name */
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    /* Container for stacking avatar above player name */
+    .player-cell {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 4px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">

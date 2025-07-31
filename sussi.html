@@ -5,10 +5,26 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Sussi - Rozlučka</title>
   <link rel="stylesheet" href="styles.css">
+  <style>
+    .avatar-large {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      object-fit: cover;
+    }
+    .header-container {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+  </style>
 </head>
 <body>
   <div class="container">
-    <h1>Sussi</h1>
+    <div class="header-container">
+      <img src="avatars/sussi.png" alt="Sussi" class="avatar-large">
+      <h1>Sussi</h1>
+    </div>
     <p><strong>Body:</strong> <span id="score">0</span></p>
     <ul id="tasks"></ul>
     <div id="score-info"></div>
