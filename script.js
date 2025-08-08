@@ -70,59 +70,64 @@ function initPage(playerName) {
   }
 
   function createOrUpdateSubtask(task, anchorLi, taskIndex) {
-    if (!task.subDescription) return;
-    if (subTaskNodes[taskIndex]) {
-      subTaskNodes[taskIndex].remove();
-      delete subTaskNodes[taskIndex];
-    }
-    const liSub = document.createElement('li');
-    liSub.classList.add('subtask-item');
+  if (!task.subDescription) return;
+  if (subTaskNodes[taskIndex]) {
+    subTaskNodes[taskIndex].remove();
+    delete subTaskNodes[taskIndex];
+  }
 
-    const labelSub = document.createElement('label');
-    labelSub.textContent = `${task.subDescription} (${task.subPoints || 5} b.)`;
+  const liSub = document.createElement('li');
+  liSub.classList.add('subtask-item');
 
-    const checkboxSub = document.createElement('input');
-    checkboxSub.type = 'checkbox';
+  const labelSub = document.createElement('label');
+  labelSub.textContent = `${task.subDescription} (${task.subPoints || 5} b.)`;
 
-    const starsWrap = document.createElement('span');
-    starsWrap.className = 'subtask-stars';
+  const checkboxSub = document.createElement('input');
+  checkboxSub.type = 'checkbox';
 
-    // načti counts
-    const counts = JSON.parse(localStorage.getItem(`repeatCounts_${playerName}`) || "[]");
-    while (counts.length < tasks.length) counts.push(0);
+  const starsWrap = document.createElement('span');
+  starsWrap.className = 'subtask-stars';
 
-    function saveCounts(newCounts):
-        # Save counts and recompute score
-        localStorage.setItem(f"repeatCounts_{playerName}", JSON.stringify(newCounts))
-        updateScore(playerName)
+  // načti counts
+  const countsKey = `repeatCounts_${playerName}`;
+  const counts = JSON.parse(localStorage.getItem(countsKey) || "[]");
+  while (counts.length < tasks.length) counts.push(0);
 
-    def onRemoveStar(event=None):
-        nonlocal counts
-        if counts[taskIndex] > 0:
-            counts[taskIndex] -= 1
-            saveCounts(counts)
-            renderStars(starsWrap, counts[taskIndex], onRemoveStar)
+  function saveCounts(newCounts) {
+    localStorage.setItem(countsKey, JSON.stringify(newCounts));
+    updateScore(playerName);
+  }
 
-    renderStars(starsWrap, counts[taskIndex] or 0, onRemoveStar)
-
-    checkboxSub.addEventListener('change', () => {
-      if (checkboxSub.checked) {
-        counts[taskIndex] = (counts[taskIndex] || 0) + 1;
-        saveCounts(counts);
-        checkboxSub.checked = false;
+  function onRemoveStar() {
+    if (counts[taskIndex] > 0) {
+      counts[taskIndex] -= 1;
+      saveCounts(counts);
       renderStars(starsWrap, counts[taskIndex], onRemoveStar);
-
-    spustKonfety();  // 🎉 hvězdička přidána
+      // (volitelné) konfety i při odebírání hvězdy:
+      // spustKonfety();
+    }
   }
-});
 
-    liSub.prepend(checkboxSub);
-    liSub.appendChild(labelSub);
-    liSub.appendChild(starsWrap);
+  renderStars(starsWrap, counts[taskIndex] || 0, onRemoveStar);
 
-    anchorLi.insertAdjacentElement('afterend', liSub);
-    subTaskNodes[taskIndex] = liSub;
-  }
+  checkboxSub.addEventListener('change', () => {
+    if (checkboxSub.checked) {
+      counts[taskIndex] = (counts[taskIndex] || 0) + 1;
+      saveCounts(counts);
+      checkboxSub.checked = false;
+      renderStars(starsWrap, counts[taskIndex], onRemoveStar);
+      spustKonfety(); // 🎉 hvězdička přidána
+    }
+  });
+
+  liSub.prepend(checkboxSub);
+  liSub.appendChild(labelSub);
+  liSub.appendChild(starsWrap);
+
+  anchorLi.insertAdjacentElement('afterend', liSub);
+  subTaskNodes[taskIndex] = liSub;
+}
+
 
   tasks.forEach((task, index) => {
     const li = document.createElement('li');
