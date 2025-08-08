@@ -1,6 +1,6 @@
-// Modified scoreboard script (localStorage verze) s hnízděnými podúkoly
+// Script pro scoreboard (localStorage verze) – Varianta B s hvězdičkami
 
-// Upravený seznam úkolů bez textu "(opakovat)"; opakovatelné mají subDescription + subPoints.
+// ===== Seznam úkolů =====
 const tasks = [
   { description: "Společně vymysleme jméno pro našeho týpka.", points: 5 },
   { description: "Udělejme společnou fotku \"Před\".", points: 5 },
@@ -21,7 +21,6 @@ const tasks = [
 ];
 
 const players = ['Tínka','Míša','Mája','Masha','Žaneta','Sussi','Tereza'];
-
 const playerImages = {
   'Tínka': 'avatars/tínka.png',
   'Míša': 'avatars/míša.png',
@@ -34,10 +33,19 @@ const playerImages = {
 
 const maxPoints = tasks.reduce((sum, t) => sum + t.points, 0);
 
+function computeDynamicFromCounts(counts) {
+  return counts.reduce((sum, c, i) => sum + (c * (tasks[i].subDescription ? (tasks[i].subPoints || 5) : 0)), 0);
+}
+
 function getLeaderboardData() {
   const data = players.map(name => {
+    const counts = JSON.parse(localStorage.getItem(`repeatCounts_${name}`) || "[]");
     const score = parseInt(localStorage.getItem(`score_${name}`) || "0", 10);
-    return { name, score };
+    // Přepočet pro jistotu podle counts + zaškrtnutých hlavních
+    const checked = JSON.parse(localStorage.getItem(`tasks_${name}`) || "[]");
+    const base = checked.reduce((s, i) => s + tasks[i].points, 0);
+    const dyn = computeDynamicFromCounts(counts);
+    return { name, score: base + dyn };
   });
   data.sort((a, b) => b.score - a.score);
   return data;
@@ -47,36 +55,70 @@ function initPage(playerName) {
   const tasksList = document.getElementById("tasks");
   tasksList.innerHTML = "";
 
-  // držáky na DOM uzly podúkolů
   const subTaskNodes = {};
 
-  function createSubTaskElement(task, anchorEl, taskIndex) {
+  function renderStars(container, count, onRemoveOne) {
+    container.innerHTML = "";
+    for (let i = 0; i < count; i++) {
+      const s = document.createElement('span');
+      s.className = 'star';
+      s.textContent = '⭐';
+      s.title = 'Kliknutím odebereš 1 splnění (-5 b)';
+      s.addEventListener('click', onRemoveOne);
+      container.appendChild(s);
+    }
+  }
+
+  function createOrUpdateSubtask(task, anchorLi, taskIndex) {
     if (!task.subDescription) return;
     if (subTaskNodes[taskIndex]) {
       subTaskNodes[taskIndex].remove();
       delete subTaskNodes[taskIndex];
     }
     const liSub = document.createElement('li');
-    liSub.classList.add('subtask-item'); // v CSS: .subtask-item { margin-left: 24px; font-style: italic; }
+    liSub.classList.add('subtask-item');
+
     const labelSub = document.createElement('label');
     labelSub.textContent = `${task.subDescription} (${task.subPoints || 5} b.)`;
+
     const checkboxSub = document.createElement('input');
     checkboxSub.type = 'checkbox';
+
+    const starsWrap = document.createElement('span');
+    starsWrap.className = 'subtask-stars';
+
+    // načti counts
+    const counts = JSON.parse(localStorage.getItem(`repeatCounts_${playerName}`) || "[]");
+    while (counts.length < tasks.length) counts.push(0);
+
+    function saveCounts(newCounts):
+        # Save counts and recompute score
+        localStorage.setItem(f"repeatCounts_{playerName}", JSON.stringify(newCounts))
+        updateScore(playerName)
+
+    def onRemoveStar(event=None):
+        nonlocal counts
+        if counts[taskIndex] > 0:
+            counts[taskIndex] -= 1
+            saveCounts(counts)
+            renderStars(starsWrap, counts[taskIndex], onRemoveStar)
+
+    renderStars(starsWrap, counts[taskIndex] or 0, onRemoveStar)
+
     checkboxSub.addEventListener('change', () => {
       if (checkboxSub.checked) {
-        const dynKey = `dynamic_${playerName}`;
-        let dyn = parseInt(localStorage.getItem(dynKey) || "0", 10);
-        dyn += task.subPoints || 5;
-        localStorage.setItem(dynKey, dyn);
-        updateScore(playerName);
-        liSub.remove();
-        delete subTaskNodes[taskIndex];
-        createSubTaskElement(task, anchorEl, taskIndex);
+        counts[taskIndex] = (counts[taskIndex] || 0) + 1;
+        saveCounts(counts);
+        checkboxSub.checked = false;
+        renderStars(starsWrap, counts[taskIndex], onRemoveStar);
       }
     });
+
     liSub.prepend(checkboxSub);
     liSub.appendChild(labelSub);
-    anchorEl.insertAdjacentElement('afterend', liSub);
+    liSub.appendChild(starsWrap);
+
+    anchorLi.insertAdjacentElement('afterend', liSub);
     subTaskNodes[taskIndex] = liSub;
   }
 
@@ -103,7 +145,7 @@ function initPage(playerName) {
       updateScore(playerName);
 
       if (task.subDescription && checkbox.checked && !wasChecked) {
-        createSubTaskElement(task, li, index);
+        createOrUpdateSubtask(task, li, index);
       }
       if (!checkbox.checked && subTaskNodes[index]) {
         subTaskNodes[index].remove();
@@ -115,9 +157,9 @@ function initPage(playerName) {
     li.appendChild(label);
     tasksList.appendChild(li);
 
-    // při načtení – pokud byl hlavní úkol už dřív zaškrtnut, zobraz rovnou podúkol
+    // při načtení: pokud je hlavní úkol zaškrtnutý, ukaž podúkol
     if (task.subDescription && checkbox.checked) {
-      createSubTaskElement(task, li, index);
+      createOrUpdateSubtask(task, li, index);
     }
   });
 
@@ -127,7 +169,11 @@ function initPage(playerName) {
 function updateScore(playerName) {
   const checkedIndices = JSON.parse(localStorage.getItem(`tasks_${playerName}`) || "[]");
   const basePoints = checkedIndices.reduce((sum, i) => sum + tasks[i].points, 0);
-  const dynamicPoints = parseInt(localStorage.getItem(`dynamic_${playerName}`) || "0", 10);
+
+  const counts = JSON.parse(localStorage.getItem(`repeatCounts_${playerName}`) || "[]");
+  while (counts.length < tasks.length) counts.push(0);
+  const dynamicPoints = computeDynamicFromCounts(counts);
+
   const totalPoints = basePoints + dynamicPoints;
   const scoreEl = document.getElementById('score');
   if (scoreEl) scoreEl.textContent = totalPoints;
@@ -161,6 +207,19 @@ function updateExtraUI(playerName) {
     else message = "👑 Získáváš titul korunovaná ultrapařmenka! 👑";
     motivaceEl.textContent = message;
   }
+}
+
+function getLeaderboardData() {
+  const data = players.map(name => {
+    const checked = JSON.parse(localStorage.getItem(`tasks_${name}`) || "[]");
+    const base = checked.reduce((s, i) => s + tasks[i].points, 0);
+    const counts = JSON.parse(localStorage.getItem(`repeatCounts_${name}`) || "[]");
+    while (counts.length < tasks.length) counts.push(0);
+    const dyn = computeDynamicFromCounts(counts);
+    return { name, score: base + dyn };
+  });
+  data.sort((a, b) => b.score - a.score);
+  return data;
 }
 
 function initLeaderboard() {
