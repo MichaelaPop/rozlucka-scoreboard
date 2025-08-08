@@ -196,3 +196,14 @@ h2 {
 .subtask-item { margin-left: 24px; opacity: .95; }
 .subtask-stars .star { cursor: pointer; }
 .subtask-item label { font-style: italic; margin-right: 8px; }
+.subtask-star {
+  cursor: pointer;
+  color: gold;
+  font-size: 1.2em;
+  margin-left: 8px;
+  user-select: none;
+}
+
+.subtask-star.completed {
+  opacity: 0.5;
+}
