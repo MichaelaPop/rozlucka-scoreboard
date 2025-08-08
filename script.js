@@ -110,9 +110,11 @@ function initPage(playerName) {
         counts[taskIndex] = (counts[taskIndex] || 0) + 1;
         saveCounts(counts);
         checkboxSub.checked = false;
-        renderStars(starsWrap, counts[taskIndex], onRemoveStar);
-      }
-    });
+      renderStars(starsWrap, counts[taskIndex], onRemoveStar);
+
+    spustKonfety();  // 🎉 hvězdička přidána
+  }
+});
 
     liSub.prepend(checkboxSub);
     liSub.appendChild(labelSub);
@@ -144,6 +146,10 @@ function initPage(playerName) {
       localStorage.setItem(`tasks_${playerName}`, JSON.stringify(checkedIndices));
       updateScore(playerName);
 
+  // ➜ TADY: nově splněný hlavní úkol = konfety
+  if (checkbox.checked && !wasChecked) {
+    spustKonfety();   // 🎉
+  }
       if (task.subDescription && checkbox.checked && !wasChecked) {
         createOrUpdateSubtask(task, li, index);
       }
