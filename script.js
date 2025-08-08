@@ -256,3 +256,11 @@ function initLeaderboard() {
   window.addEventListener('storage', render);
   setInterval(render, 1000);
 }
+function spustKonfety() {
+    confetti({
+        particleCount: 100,
+        spread: 70,
+        origin: { y: 0.6 },
+        colors: ['#ff69b4', '#ff1493', '#ffc0cb']
+    });
+}
