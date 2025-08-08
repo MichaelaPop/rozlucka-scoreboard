@@ -9,22 +9,90 @@
 // Upravený seznam úkolů.  Opravili jsme formulace prvního a čtvrtého úkolu
 // tak, aby odpovídaly požadovaným tvarům, a přidali jsme dva nové úkoly.
 const tasks = [
-  { description: "Společně vymysleme jméno pro našeho týpka.", points: 5 },
-  { description: "Udělejme společnou fotku \"Před\".", points: 5 },
-  { description: "Vyfoť se s nevěstou v originální póze. (opakovat)", points: 10 },
-  { description: "Udělej si crazy fotku s naším týpkem. (opakovat)", points: 15 },
-  { description: "Měj na sobě alespoň 15 minut \"Sexy Borat\" triko.", points: 45 },
-  { description: "Vyvolej u někoho záchvat smíchu. (opakovat)", points: 50 },
-  { description: "Vyfoť tajně nejulítlejší outfit večera. (opakovat)", points: 20 },
-  { description: "Vyfoť tajně někoho, kdo vypadá jako známá osobnost. (opakovat)", points: 20 },
-  { description: "Udělej si selfie s naprostým cizincem. (opakovat)", points: 30 },
-  { description: "Vyfoť nejvíc sexy týpka večera. (opakovat)", points: 25 },
-  { description: "Vyfoť tajně holku, která má na sobě víc růžové než ty.", points: 15 },
-  { description: "Zachyť nejvíc znechucený výraz večera. (opakovat)", points: 20 },
-  { description: "Vyfoť náhodnou věc, která připomíná penis. (opakovat)", points: 25 },
-  { description: "Udělejme fotku se šesti Tomy a nevěstou.", points: 10 },
-  { description: "Udělej bláznivou selfie s co největším počtem Tomů.", points: 15 },
-  { description: "Udělejme společnou fotku \"PO\" (před odchodem první z nás).", points: 10 }
+  // Základní seznam úkolů bez textu "(opakovat)".  U opakovatelných úkolů
+  // je přidána subDescription a subPoints pro tvorbu opakovaných podúkolů.
+  {
+    description: "Společně vymysleme jméno pro našeho týpka.",
+    points: 5
+  },
+  {
+    description: "Udělejme společnou fotku \"Před\".",
+    points: 5
+  },
+  {
+    description: "Vyfoť se s nevěstou v originální póze.",
+    points: 10,
+    subDescription: "Udělej si další fotku s nevěstou.",
+    subPoints: 5
+  },
+  {
+    description: "Udělej si crazy fotku s naším týpkem.",
+    points: 15,
+    subDescription: "Znovu se vyfoť s naším týpkem.",
+    subPoints: 5
+  },
+  {
+    description: "Měj na sobě alespoň 15 minut \"Sexy Borat\" triko.",
+    points: 45
+  },
+  {
+    description: "Vyvolej u někoho záchvat smíchu.",
+    points: 50,
+    subDescription: "Rozesměj někoho dalšího.",
+    subPoints: 5
+  },
+  {
+    description: "Vyfoť tajně nejulítlejší outfit večera.",
+    points: 20,
+    subDescription: "Zachyť další šílený outfit.",
+    subPoints: 5
+  },
+  {
+    description: "Vyfoť tajně někoho, kdo vypadá jako známá osobnost.",
+    points: 20,
+    subDescription: "Další celebritu prosím.",
+    subPoints: 5
+  },
+  {
+    description: "Udělej si selfie s naprostým cizincem.",
+    points: 30,
+    subDescription: "Je libo další neznámý?",
+    subPoints: 5
+  },
+  {
+    description: "Vyfoť nejvíc sexy týpka večera.",
+    points: 25,
+    subDescription: "Sem s dalším týpkem!",
+    subPoints: 5
+  },
+  {
+    description: "Vyfoť tajně holku, která má na sobě víc růžové než ty.",
+    points: 15
+  },
+  {
+    description: "Zachyť nejvíc znechucený výraz večera.",
+    points: 20,
+    subDescription: "Vyfoť další znechucený výraz.",
+    subPoints: 5
+  },
+  {
+    description: "Vyfoť náhodnou věc, která připomíná penis.",
+    points: 25,
+    subDescription: "Další pindík prosím.",
+    subPoints: 5
+  },
+  {
+    description: "Udělejme fotku se šesti Tomy a nevěstou.",
+    points: 10
+  },
+  {
+    description: "Udělej bláznivou selfie s co největším počtem Tomů.",
+    points: 15
+  },
+  {
+    description: "Udělejme společnou fotku \"PO\" (před odchodem první z nás).",
+    points: 10
+  }
 ];
 
 // List of players for leaderboard and ranking.  Make sure the order here
@@ -62,6 +130,36 @@ function getLeaderboardData() {
 function initPage(playerName) {
   const tasksList = document.getElementById("tasks");
   tasksList.innerHTML = "";
+  // Pomocná funkce pro vytváření podúkolů v režimu, kdy se data ukládají
+  // do localStorage.  Po splnění podúkolu se přičtou body a vygeneruje se
+  // další podúkol, takže úkol lze plnit opakovaně.
+  function createSubTaskElement(task) {
+    if (!task.subDescription) return;
+    const liSub = document.createElement('li');
+    const labelSub = document.createElement('label');
+    labelSub.textContent = `${task.subDescription} (${task.subPoints || 5} b.)`;
+    const checkboxSub = document.createElement('input');
+    checkboxSub.type = 'checkbox';
+    checkboxSub.addEventListener('change', () => {
+      if (checkboxSub.checked) {
+        // Přičti body k dynamickému skóre hráčky a ulož
+        const dynKey = `dynamic_${playerName}`;
+        let dyn = parseInt(localStorage.getItem(dynKey) || "0", 10);
+        dyn += task.subPoints || 5;
+        localStorage.setItem(dynKey, dyn);
+        // Aktualizuj celkové skóre a UI
+        updateScore(playerName);
+        // Odeber splněný podúkol z DOMu
+        liSub.remove();
+        // Vytvoř další podúkol
+        createSubTaskElement(task);
+      }
+    });
+    liSub.prepend(checkboxSub);
+    liSub.appendChild(labelSub);
+    tasksList.appendChild(liSub);
+  }
+
   tasks.forEach((task, index) => {
     const li = document.createElement('li');
     const label = document.createElement('label');
@@ -69,21 +167,32 @@ function initPage(playerName) {
     const checkbox = document.createElement('input');
     checkbox.type = 'checkbox';
     const stored = JSON.parse(localStorage.getItem(`tasks_${playerName}`) || "[]");
+    // Zjisti, zda byl úkol zaškrtnut dříve
     checkbox.checked = stored.includes(index);
     checkbox.addEventListener('change', () => {
       const checkedIndices = JSON.parse(localStorage.getItem(`tasks_${playerName}`) || "[]");
+      const wasChecked = checkedIndices.includes(index);
       if (checkbox.checked) {
-        if (!checkedIndices.includes(index)) checkedIndices.push(index);
+        if (!wasChecked) checkedIndices.push(index);
       } else {
         const idx = checkedIndices.indexOf(index);
         if (idx !== -1) checkedIndices.splice(idx, 1);
       }
       localStorage.setItem(`tasks_${playerName}`, JSON.stringify(checkedIndices));
       updateScore(playerName);
+      // Pokud je úkol opakovatelný a byl právě zaškrtnut poprvé,
+      // vytvoř podúkol
+      if (task.subDescription && checkbox.checked && !wasChecked) {
+        createSubTaskElement(task);
+      }
     });
     li.prepend(checkbox);
     li.appendChild(label);
     tasksList.appendChild(li);
+    // Pokud byl úkol dříve zaškrtnut a je opakovatelný, zobraz rovnou podúkol
+    if (task.subDescription && checkbox.checked) {
+      createSubTaskElement(task);
+    }
   });
   updateScore(playerName);
 }
@@ -92,7 +201,11 @@ function initPage(playerName) {
 // triggers updates to the extra UI (progress bar, motivational message).
 function updateScore(playerName) {
   const checkedIndices = JSON.parse(localStorage.getItem(`tasks_${playerName}`) || "[]");
-  const totalPoints = checkedIndices.reduce((sum, i) => sum + tasks[i].points, 0);
+  // Základní body za úkoly
+  const basePoints = checkedIndices.reduce((sum, i) => sum + tasks[i].points, 0);
+  // Body získané z opakovaných podúkolů
+  const dynamicPoints = parseInt(localStorage.getItem(`dynamic_${playerName}`) || "0", 10);
+  const totalPoints = basePoints + dynamicPoints;
   const scoreEl = document.getElementById('score');
   if (scoreEl) scoreEl.textContent = totalPoints;
   localStorage.setItem(`score_${playerName}`, totalPoints);
