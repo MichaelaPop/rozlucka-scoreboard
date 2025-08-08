@@ -9,21 +9,22 @@
 // Upravený seznam úkolů.  Opravili jsme formulace prvního a čtvrtého úkolu
 // tak, aby odpovídaly požadovaným tvarům, a přidali jsme dva nové úkoly.
 const tasks = [
-  { description: "Společně vymysleme jméno pro vašeho týpka.", points: 5 },
+  { description: "Společně vymysleme jméno pro našeho týpka.", points: 5 },
   { description: "Udělejme společnou fotku \"Před\".", points: 5 },
-  { description: "Vyfoť se s nevěstou v originální póze.", points: 10 },
-  { description: "Udělej si crazy fotku s naším týpkem.", points: 15 },
-  { description: "Vyfoť tajně nejulítlejší outfit večera.", points: 20 },
-  { description: "Vyfoť tajně někoho, kdo vypadá jako známá osobnost.", points: 20 },
-  { description: "Udělej si selfie s naprostým cizincem.", points: 30 },
-  { description: "Vyfoť nejvíc sexy týpka večera.", points: 25 },
+  { description: "Vyfoť se s nevěstou v originální póze. (opakovat)", points: 10 },
+  { description: "Udělej si crazy fotku s naším týpkem. (opakovat)", points: 15 },
+  { description: "Měj na sobě alespoň 15 minut \"Sexy Borat\" triko.", points: 45 },
+  { description: "Vyvolej u někoho záchvat smíchu. (opakovat)", points: 50 },
+  { description: "Vyfoť tajně nejulítlejší outfit večera. (opakovat)", points: 20 },
+  { description: "Vyfoť tajně někoho, kdo vypadá jako známá osobnost. (opakovat)", points: 20 },
+  { description: "Udělej si selfie s naprostým cizincem. (opakovat)", points: 30 },
+  { description: "Vyfoť nejvíc sexy týpka večera. (opakovat)", points: 25 },
   { description: "Vyfoť tajně holku, která má na sobě víc růžové než ty.", points: 15 },
-  { description: "Zachyť nejvíc znechucený výraz večera.", points: 20 },
-  { description: "Vyfoť náhodnou věc, která připomíná penis.", points: 25 },
-  { description: "Udělejme společnou fotku \"PO\" (před odchodem první z nás).", points: 10 },
-  // Nové úkoly
+  { description: "Zachyť nejvíc znechucený výraz večera. (opakovat)", points: 20 },
+  { description: "Vyfoť náhodnou věc, která připomíná penis. (opakovat)", points: 25 },
   { description: "Udělejme fotku se šesti Tomy a nevěstou.", points: 10 },
-  { description: "Udělej bláznivou selfie s co největším počtem Tomů.", points: 15 }
+  { description: "Udělej bláznivou selfie s co největším počtem Tomů.", points: 15 },
+  { description: "Udělejme společnou fotku \"PO\" (před odchodem první z nás).", points: 10 }
 ];
 
 // List of players for leaderboard and ranking.  Make sure the order here
@@ -124,18 +125,24 @@ function updateExtraUI(playerName) {
     // Motivace se mění podle aktuálního skóre. Přidali jsme stupeň nad 170 bodů,
     // aby titul ultrapařmenka odpovídal novému maximálnímu počtu bodů.
     if (currentScore === 0) {
-      message = "Holka, začni! Tohle není kavárna.";
-    } else if (currentScore <= 30) {
-      message = "Už to jiskří, ale chce to přidat!";
-    } else if (currentScore <= 70) {
-      message = "Rozjíždíš to! Jsi na dobré cestě ke slávě!";
-    } else if (currentScore <= 120) {
-      message = "Už jsi legenda večera… skoro!";
-    } else if (currentScore <= 170) {
-      message = "🔥 Královno chaosu! Ostatní nestíhají!";
-    } else {
-      message = "🔥🔥🔥Získáváš titul korunovaná ultrapařmenka!🔥🔥🔥";
-    }
+  message = "Holka, začni! Tohle není kavárna.";
+} else if (currentScore <= 29) {
+  message = "Už to jiskří, ale chce to přidat!";
+} else if (currentScore <= 59) {
+  message = "Rozjíždíš to! Jsi na dobré cestě ke slávě!";
+} else if (currentScore <= 89) {
+  message = "Už jsi legenda večera… skoro!";
+} else if (currentScore <= 119) {
+  message = "Tohle už není hra. To je tvá chvíle slávy";
+} else if (currentScore <= 149) {
+  message = "🔥 Královno chaosu! Ostatní nestíhají!";
+} else if (currentScore <= 169) {
+  message = "Už máš pomalu víc bodů než tvoje důstojnost!";
+} else if (currentScore <= 199) {
+  message = "Nevěsta je určitě pyšná… nebo aspoň pobavená.";
+} else {
+  message = "👑 Získáváš titul korunovaná ultrapařmenka! 👑";
+}
     motivaceEl.textContent = message;
   }
 }
